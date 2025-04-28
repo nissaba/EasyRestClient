@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		8C5498F12DC0258700F14D0B /* PatsRestService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C5498E52DC0258600F14D0B /* PatsRestService.framework */; };
+		8CEC3E1B2DC04059005F9716 /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8CEC3E1A2DC04059005F9716 /* LICENSE.txt */; };
+		8CEC3E1D2DC0411B005F9716 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 8CEC3E1C2DC04117005F9716 /* README.md */; };
+		8CEC3E1F2DC04260005F9716 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CEC3E1E2DC0425C005F9716 /* Package.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -23,7 +26,30 @@
 /* Begin PBXFileReference section */
 		8C5498E52DC0258600F14D0B /* PatsRestService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PatsRestService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C5498F02DC0258700F14D0B /* PatsRestServiceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PatsRestServiceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8CEC3E1A2DC04059005F9716 /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
+		8CEC3E1C2DC04117005F9716 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		8CEC3E1E2DC0425C005F9716 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		8CEC3E212DC0429F005F9716 /* Exceptions for "Sources" folder in "PatsRestService" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				RestEasy.swift,
+			);
+			target = 8C5498E42DC0258600F14D0B /* PatsRestService */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		8CEC3E222DC0429F005F9716 /* Exceptions for "Sources" folder in "Copy Bundle Resources" phase from "PatsRestService" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 8C5498E32DC0258600F14D0B /* Resources */;
+			membershipExceptions = (
+				RestEasy.swift,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		8C5498E72DC0258600F14D0B /* PatsRestService */ = {
@@ -34,6 +60,15 @@
 		8C5498F42DC0258700F14D0B /* PatsRestServiceTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = PatsRestServiceTests;
+			sourceTree = "<group>";
+		};
+		8CEC3E202DC04290005F9716 /* Sources */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				8CEC3E212DC0429F005F9716 /* Exceptions for "Sources" folder in "PatsRestService" target */,
+				8CEC3E222DC0429F005F9716 /* Exceptions for "Sources" folder in "Copy Bundle Resources" phase from "PatsRestService" target */,
+			);
+			path = Sources;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -60,9 +95,13 @@
 		8C5498DB2DC0258600F14D0B = {
 			isa = PBXGroup;
 			children = (
+				8CEC3E1C2DC04117005F9716 /* README.md */,
+				8CEC3E1E2DC0425C005F9716 /* Package.swift */,
+				8CEC3E1A2DC04059005F9716 /* LICENSE.txt */,
 				8C5498E72DC0258600F14D0B /* PatsRestService */,
 				8C5498F42DC0258700F14D0B /* PatsRestServiceTests */,
 				8C5498E62DC0258600F14D0B /* Products */,
+				8CEC3E202DC04290005F9716 /* Sources */,
 			);
 			sourceTree = "<group>";
 		};
@@ -103,6 +142,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				8C5498E72DC0258600F14D0B /* PatsRestService */,
+				8CEC3E202DC04290005F9716 /* Sources */,
 			);
 			name = PatsRestService;
 			packageProductDependencies = (
@@ -177,6 +217,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CEC3E1D2DC0411B005F9716 /* README.md in Resources */,
+				8CEC3E1B2DC04059005F9716 /* LICENSE.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,6 +236,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CEC3E1F2DC04260005F9716 /* Package.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
