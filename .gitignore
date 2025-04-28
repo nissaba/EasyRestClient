@@ -1,0 +1,32 @@
+# Xcode
+build/
+DerivedData/
+.idea/
+*.xcworkspace
+*.xcodeproj
+*.xcuserstate
+*.xcuserdatad
+*.moved-aside
+*.hmap
+*.ipa
+*.app.dSYM.zip
+*.app.dSYM
+
+# SwiftPM
+.build/
+Packages/
+Package.resolved
+
+# macOS files
+.DS_Store
+*.swp
+*~
+
+# Swiftlint, Fastlane, Cocoapods (if ever used)
+swiftlint.yml
+fastlane/report.xml
+Pods/
+
+# Other
+*.orig
+

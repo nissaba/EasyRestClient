@@ -10,7 +10,6 @@
 		8C5498F12DC0258700F14D0B /* PatsRestService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C5498E52DC0258600F14D0B /* PatsRestService.framework */; };
 		8CEC3E1B2DC04059005F9716 /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8CEC3E1A2DC04059005F9716 /* LICENSE.txt */; };
 		8CEC3E1D2DC0411B005F9716 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 8CEC3E1C2DC04117005F9716 /* README.md */; };
-		8CEC3E1F2DC04260005F9716 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CEC3E1E2DC0425C005F9716 /* Package.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -236,7 +235,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8CEC3E1F2DC04260005F9716 /* Package.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
