@@ -1,5 +1,8 @@
 # RestEasy
 
+[![Swift Package Manager](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://swift.org/package-manager/)
+
+
 **RestEasy** is a lightweight, flexible, protocol-oriented Swift framework for interacting with REST APIs.
 
 Created and maintained by **Pascale Beaulac**.
