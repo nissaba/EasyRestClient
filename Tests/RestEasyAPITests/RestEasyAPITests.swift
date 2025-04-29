@@ -7,9 +7,9 @@
 
 
 import XCTest
-@testable import RestEasyAPI
+@testable import EasyRestClient
 
-struct DummyRequest: RestEasyRequest {
+struct DummyRequest: EasyResRequest {
     typealias Response = String
     
     var httpMethod: HTTPMethods { .get }
