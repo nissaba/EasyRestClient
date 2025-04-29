@@ -1,4 +1,5 @@
 # RestEasyAPI
+[![SwiftPM](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://github.com/nissaba/RestEasy)
 
 A lightweight, protocol-oriented Swift networking layer for making REST API calls.
 
