@@ -29,12 +29,3 @@ public protocol RestEasyRequest: Encodable {
     /// Body Data (optional, overrides Encodable body if provided).
     var bodyData: Data? { get }
 }
-
-public extension RestEasyRequest {
-    var headers: [String: String]? {
-        [
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-        ]
-    }
-}
