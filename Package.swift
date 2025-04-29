@@ -4,21 +4,21 @@
 import PackageDescription
 
 let package = Package(
-    name: "RestEasyAPI",
+    name: "EasyRestClient",
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "RestEasyAPI",
-            targets: ["RestEasyAPI"]),
+            name: "EasyRestClient",
+            targets: ["EasyRestClient"]),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "RestEasyAPI"),
+            name: "EasyRestClient"),
         .testTarget(
-            name: "RestEasyAPITests",
-            dependencies: ["RestEasyAPI"]
+            name: "EasyRestAPITests",
+            dependencies: ["EasyRestClient"]
         )
 
     ]

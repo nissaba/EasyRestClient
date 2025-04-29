@@ -1,7 +1,7 @@
 //
-// RestEasyResponse.swift
+// EasyRestDefaultResponse.swift
 //
-// Generic API response for RESTEasy framework
+// API response without data for RESTEasy framework
 //
 // Created and maintained by Pascale Beaulac
 // Copyright © 2019–2025 Pascale Beaulac
@@ -11,11 +11,10 @@
 
 import Foundation
 
-/// Generic top-level response wrapper for API requests with a data payload.
-public struct RestEasyResponse<Response: Decodable>: Decodable {
+/// Top-level response wrapper for API requests without any data payload.
+public struct EasyRestDefaultResponse: Decodable {
     public let code: Int?
     public let details: [String]?
     public let error: String?
     public let message: String?
-    public let data: Response?
 }

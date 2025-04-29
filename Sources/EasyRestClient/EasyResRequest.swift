@@ -1,7 +1,7 @@
 //
-// RestEasyRequest.swift
+// EasyResRequest.swift
 //
-// Request protocol for RESTEasy framework
+// Request protocol for EasyREST framework
 //
 // Created and maintained by Pascale Beaulac
 // Copyright © 2019–2025 Pascale Beaulac
@@ -11,7 +11,7 @@
 
 import Foundation
 
-public protocol RestEasyRequest: Encodable {
+public protocol EasyResRequest: Encodable {
     associatedtype Response: Decodable
     
     /// HTTP method (GET, POST, PUT, DELETE, etc.)

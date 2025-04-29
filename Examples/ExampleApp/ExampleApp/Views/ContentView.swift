@@ -7,7 +7,7 @@
 
 import SwiftUI
 import CoreLocation
-import RestEasyAPI
+import EasyRestClient
 
 struct ContentView: View {
     @StateObject private var locationManager = LocationManager()

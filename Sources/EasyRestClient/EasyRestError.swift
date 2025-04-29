@@ -1,5 +1,5 @@
 //
-//  RestEasyError.swift
+//  EasyRestError.swift
 //  PatsRestService
 //
 // Created and maintained by Pascale Beaulac
@@ -11,7 +11,7 @@
 import Foundation
 
 /// Enumeration of common RESTEasy errors.
-public enum RestEasyError: Error {
+public enum EasyRestError: Error {
     case encoding
     case decoding
     case server(message: String)

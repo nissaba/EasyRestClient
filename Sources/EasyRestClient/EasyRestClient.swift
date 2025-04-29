@@ -1,5 +1,5 @@
 //
-// RestEasy.swift
+// EasyRestClient.swift
 //
 // Created and maintained by Pascale Beaulac
 // Copyright © 2019–2025 Pascale Beaulac
@@ -14,7 +14,7 @@ public typealias ResultCallback<T> = @Sendable (Result<T, Error>) -> Void
 
 
 /// Generic, protocol-based REST API client.
-public class RestEasyAPI {
+public class EasyRestClient {
     
     private let baseHostUrl: URL!
     private let session = URLSession(configuration: .default)
@@ -34,7 +34,7 @@ public class RestEasyAPI {
     /// - Parameters:
     ///   - request: Type-safe request object.
     ///   - completion: Completion handler with decoded response or error.
-    public func send<T: RestEasyRequest>(
+    public func send<T: EasyResRequest>(
         _ request: T,
         completion: @escaping ResultCallback<T.Response>
     ) {
@@ -78,7 +78,7 @@ public class RestEasyAPI {
 
             guard let data = data else {
                 DispatchQueue.main.async {
-                    completion(.failure(RestEasyError.badResponse))
+                    completion(.failure(EasyRestError.badResponse))
                 }
                 return
             }

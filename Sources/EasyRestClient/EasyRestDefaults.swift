@@ -1,11 +1,11 @@
 //
-//  RestEasyDefaults.swift
+//  EasyResRequest.swift
 //  RestEasyAPI
 //
 //  Created by Pascale on 2025-04-29.
 //
 
-public extension RestEasyRequest {
+public extension EasyResRequest {
     var headers: [String: String]? {
         [
             "Accept": "application/json",
