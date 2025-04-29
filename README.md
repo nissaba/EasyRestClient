@@ -1,11 +1,11 @@
-# RestEasyAPI
+# EasyRestClient
 
 ![SwiftPM](https://img.shields.io/badge/SPM-Compatible-brightgreen.svg)
 ![Platform](https://img.shields.io/badge/platform-iOS%2014%20%7C%20macOS%2011-blue)
 ![Swift](https://img.shields.io/badge/swift-5.9-orange.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Tests](https://github.com/nissaba/RestEasyAPI/actions/workflows/tests.yml/badge.svg)
-![Release](https://img.shields.io/github/v/release/nissaba/RestEasyAPI)
+![Tests](https://github.com/nissaba/EasyRestClient/actions/workflows/tests.yml/badge.svg)
+![Release](https://img.shields.io/github/v/release/nissaba/EasyRestClient)
 
 
 A lightweight, protocol-oriented Swift networking layer for making REST API calls.
@@ -25,26 +25,26 @@ A lightweight, protocol-oriented Swift networking layer for making REST API call
 Add to your `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/nissaba/RestEasyAPI.git", from: "1.0.0")
+.package(url: "https://github.com/nissaba/EasyRestClient.git", from: "1.0.0")
 ```
 
-Then add `RestEasyAPI` as a dependency in your target.
+Then add `EasyRestClient` as a dependency in your target.
 
 ## Usage
 
 ### 1. Initialize the Client
 
 ```swift
-import RestEasyAPI
+import EasyRestClient
 
-let apiClient = RestEasy(baseUrl: "https://api.sunrise-sunset.org/")
+let apiClient = EasyRestClient(baseUrl: "https://api.sunrise-sunset.org/")
 apiClient.authToken = "Bearer your_token_if_needed"
 ```
 
 ### 2. Create a Request
 
 ```swift
-struct MyRequest: RestEasyRequest {
+struct MyRequest: EasyRestRequest {
     typealias Response = MyResponseModel
 
     var httpMethod: HTTPMethods { .get }
@@ -78,10 +78,10 @@ Accept: application/json
 Content-Type: application/json
 ```
 
-These are defined via a protocol extension on `RestEasyRequest`. You can override them per request if needed:
+These are defined via a protocol extension on `EasyRestRequest`. You can override them per request if needed:
 
 ```swift
-public extension RestEasyRequest {
+public extension EasyRestRequest {
     var headers: [String: String]? {
         [
             "Accept": "application/json",
@@ -94,7 +94,7 @@ public extension RestEasyRequest {
 #### Overriding headers in a specific request:
 
 ```swift
-struct AuthenticatedRequest: RestEasyRequest {
+struct AuthenticatedRequest: EasyRestRequest {
     typealias Response = MyResponse
 
     var httpMethod: HTTPMethods { .get }
