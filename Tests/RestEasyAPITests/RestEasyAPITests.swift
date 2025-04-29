@@ -36,5 +36,7 @@ final class RestEasyAPITests: XCTestCase {
         let req = DummyRequest()
         XCTAssertEqual(req.headers?["Accept"], "application/json")
     }
+    
+
 }
 

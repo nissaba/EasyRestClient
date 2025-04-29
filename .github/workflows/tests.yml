@@ -1,15 +1,20 @@
-name: Tests
+name: Run Swift Tests
 
 on: [push, pull_request]
 
 jobs:
   test:
     runs-on: macos-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: swift-actions/setup-swift@v1
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Swift
+        uses: swift-actions/setup-swift@v1
         with:
           swift-version: '5.9'
-      - name: Run tests
-        run: swift test
+
+      - name: Build and Test
+        run: swift test --enable-test-discovery
 
