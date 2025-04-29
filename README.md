@@ -5,7 +5,7 @@
 ![Swift](https://img.shields.io/badge/swift-5.9-orange.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Tests](https://github.com/nissaba/RestEasyAPI/actions/workflows/tests.yml/badge.svg)
-![Release](https://img.shields.io/github/v/release/pbeaulac/RestEasyAPI)
+![Release](https://img.shields.io/github/v/release/nissaba/RestEasyAPI)
 
 
 A lightweight, protocol-oriented Swift networking layer for making REST API calls.
