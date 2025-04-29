@@ -1,173 +1,105 @@
-# RestEasy
+# RestEasyAPI
 
-[![SwiftPM](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://github.com/nissaba/RestEasy)
+A lightweight, protocol-oriented Swift networking layer for making REST API calls.
 
-**RestEasy** is a lightweight, flexible, protocol-oriented Swift framework for interacting with REST APIs easily.
+## Features
 
-Created and maintained by **Pascale Beaulac**.  
-Licensed under the **MIT License**.
+- Protocol-based request system
+- Codable support for decoding responses
+- Customizable HTTP headers
+- Query parameters, body data, and binary support
+- Optional authorization token
+- URLSession-based implementation
+- Swift Package Manager compatible
 
----
+## Installation
 
-## ✨ Features
-
-- Protocol-oriented request/response design
-- Decodable responses using Swift's `Decodable`
-- Full control over:
-  - HTTP method
-  - Headers
-  - Query parameters
-  - Body data
-- Supports:
-  - JSON APIs
-  - Binary uploads (e.g., file uploads)
-  - Raw data downloads
-- Minimal runtime code
-- Clean Swift 5.9+ codebase
-- No external dependencies
-
----
-
-## 🛠 Installation
-
-### Swift Package Manager (SPM)
-
-Add RestEasy to your `Package.swift`:
+Add to your `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/nissaba/RestEasy.git", from: "1.0.0"),
+.package(url: "https://github.com/nissaba/RestEasyAPI.git", from: "1.0.0")
 ```
 
-Or via Xcode:
-- Go to `File > Add Packages`
-- Enter:
+Then add `RestEasyAPI` as a dependency in your target.
 
-```
-https://github.com/nissaba/RestEasy.git
-```
-
----
-
-## 📚 Usage
+## Usage
 
 ### 1. Initialize the Client
 
 ```swift
-import RestEasy
+import RestEasyAPI
 
-let apiClient = RestEasy(token: "your_auth_token", baseUrl: "https://api.example.com/")
+let apiClient = RestEasy(baseUrl: "https://api.sunrise-sunset.org/")
+apiClient.authToken = "Bearer your_token_if_needed"
 ```
 
----
-
-### 2. Define Your Requests
-
-#### Simple GET Request:
+### 2. Create a Request
 
 ```swift
-struct GetUserProfileRequest: RestEasyRequest {
-    typealias Response = UserProfile
+struct MyRequest: RestEasyRequest {
+    typealias Response = MyResponseModel
 
     var httpMethod: HTTPMethods { .get }
-    var resourceName: String { "user/profile" }
+    var resourceName: String { "endpoint" }
+
+    var queryItems: [URLQueryItem]? {
+        [URLQueryItem(name: "key", value: "value")]
+    }
 }
 ```
 
----
-
-#### GET Request with Query Parameters:
+### 3. Handle the Response
 
 ```swift
-struct SearchActivitiesRequest: RestEasyRequest {
-    typealias Response = [Activity]
+apiClient.send(MyRequest()) { result in
+    switch result {
+    case .success(let response):
+        print("Response: \(response)")
+    case .failure(let error):
+        print("Error: \(error)")
+    }
+}
+```
 
-    let userId: Int
-    let status: String
+### Custom and Default Headers
 
-    var httpMethod: HTTPMethods { .get }
-    var resourceName: String { "activities" }
+By default, all requests include the following headers:
 
-    var queryItems: [URLQueryItem]? {
+```http
+Accept: application/json
+Content-Type: application/json
+```
+
+These are defined via a protocol extension on `RestEasyRequest`. You can override them per request if needed:
+
+```swift
+public extension RestEasyRequest {
+    var headers: [String: String]? {
         [
-            URLQueryItem(name: "userId", value: "\(userId)"),
-            URLQueryItem(name: "status", value: status)
+            "Accept": "application/json",
+            "Content-Type": "application/json"
         ]
     }
 }
 ```
 
----
-
-#### Binary Upload (Data Upload Request):
+#### Overriding headers in a specific request:
 
 ```swift
-struct UploadRideDataRequest: RestEasyRequest {
-    typealias Response = RestEasyDefaultResponse
+struct AuthenticatedRequest: RestEasyRequest {
+    typealias Response = MyResponse
 
-    let data: Data
-    let location: String
-
-    var httpMethod: HTTPMethods { .put }
-    var resourceName: String { location }
+    var httpMethod: HTTPMethods { .get }
+    var resourceName: String { "secure/endpoint" }
 
     var headers: [String: String]? {
         [
-            "Content-Type": "application/octet-stream"
+            "Authorization": "Bearer \(myToken)"
         ]
     }
-
-    var bodyData: Data? {
-        data
-    }
 }
 ```
 
----
+## License
 
-### 3. Send the Request
-
-```swift
-let request = GetUserProfileRequest()
-
-apiClient.send(request) { result in
-    switch result {
-    case .success(let profile):
-        print("Loaded profile:", profile)
-    case .failure(let error):
-        print("Request failed with error:", error)
-    }
-}
-```
-
----
-
-## 📖 RestEasyRequest - What You Define
-
-| Property | Purpose |
-|:---------|:--------|
-| `httpMethod` | HTTP method (GET, POST, PUT, DELETE) |
-| `resourceName` | Relative URL path |
-| `headers` | Optional custom headers |
-| `queryItems` | Optional query parameters (GET, DELETE) |
-| `bodyData` | Optional body data for raw uploads |
-
----
-
-## 📦 Project Structure
-
-| File | Purpose |
-|:-----|:--------|
-| `RestEasy.swift` | Main API client |
-| `RestEasyRequest.swift` | Request protocol |
-| `RestEasyError.swift` | Common error types |
-| `RestEasyResponse.swift` | Decodable server response with `data` field |
-| `RestEasyDefaultResponse.swift` | Server response without `data` field |
-| `Decodable+RestEasy.swift` | Utility to simplify decoding |
-
----
-
-## 📜 License
-
-This project is licensed under the [MIT License](./LICENSE).
-
----
+MIT License. © 2025 Pascale Beaulac
