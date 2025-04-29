@@ -11,10 +11,13 @@
 
 
 
-public enum HTTPMethods: String
-{
-    case post = "POST"
-    case get = "GET"
-    case delete = "DELETE"
-    case put = "PUT"
+public enum HTTPMethods: String {
+    case get     = "GET"
+    case post    = "POST"
+    case put     = "PUT"
+    case delete  = "DELETE"
+    case patch   = "PATCH"
+    case head    = "HEAD"
+    case options = "OPTIONS"
 }
+
