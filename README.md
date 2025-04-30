@@ -57,24 +57,11 @@ client.send(MyRequest()) { result in
 }
 ```
 
-### Async/Await Response Handling
-
-```swift
-Task {
-    do {
-        let response = try await client.send(MyRequest())
-        print(response)
-    } catch {
-        print("Error: \(error.localizedDescription)")
-    }
-}
-```
-
-### 4. Async/Await Response Handling
+### Or Async/Await Response Handling
 
 ```swift
 // Requires iOS 15.0+, macOS 12.0+, tvOS 15.0+, watchOS 8.0+, visionOS 1.0+
-task {
+Task {
     do {
         let response = try await client.send(MyRequest())
         print(response)
