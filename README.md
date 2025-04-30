@@ -17,7 +17,7 @@
 Add to your `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/nissaba/EasyRestClient.git", from: "1.0.0")
+.package(url: "https://github.com/nissaba/EasyRestClient.git", from: "1.1.0")
 ```
 
 ## Usage
