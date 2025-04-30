@@ -1,0 +1,14 @@
+--indent 4
+--experimentalRules indentGuide
+--header ignore
+--wraparguments before-first
+--wrapcollections before-first
+--commas inline
+--semicolons inline
+--hexliteralcase lowercase
+--disable redundantParentheses
+--disable trailingClosures
+--disable sortedImports
+
+# Exclude directories (optional)
+--exclude Carthage, Pods, Examples/ExampleApp/Assets.xcassets, Tests/EazyRestClientTests/MockURLProtocol.swift
