@@ -14,9 +14,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install SwiftFormat
-        run: brew install swiftformat
-
       - name: Run SwiftFormat
         run: swiftformat .
 
