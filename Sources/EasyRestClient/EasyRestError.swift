@@ -1,27 +1,32 @@
 //
-//  EasyRestError.swift
-//  PatsRestService
+// EazyRestError.swift
 //
-// Created and maintained by Pascale Beaulac
-// Copyright © 2019–2025 Pascale Beaulac
-//
-// Licensed under the MIT License.
+// MIT License
 //
 
 import Foundation
 
-/// Enumeration of common RESTEasy errors.
-public enum EasyRestError: Error {
-    case encoding
-    case decoding
-    case server(message: String)
-    case cannotStoreCloudId
-    case badJSON
+public enum EazyRestError: Error {
+    case invalidURL
     case badResponse
-    case badDataURL
-    case missingCloudId
-    case cannotStoreRide
-    case authTokenMissing
-    case sslError(message: String)
-    case badStatusCode(Int)
+    case serverError(Int)
+    case decodingError(Error)
+    case transportError(Error)
+}
+
+extension EazyRestError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .invalidURL:
+            return "The URL is invalid."
+        case .badResponse:
+            return "Invalid or missing response."
+        case .serverError(let code):
+            return "Server returned status code \(code)."
+        case .decodingError(let err):
+            return "Decoding failed: \(err.localizedDescription)"
+        case .transportError(let err):
+            return "Network error: \(err.localizedDescription)"
+        }
+    }
 }

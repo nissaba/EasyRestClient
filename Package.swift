@@ -1,25 +1,21 @@
-// swift-tools-version: 5.9.2
-// The swift-tools-version declares the minimum version of Swift required to build this package.
-
+// swift-tools-version:6.1
 import PackageDescription
 
 let package = Package(
-    name: "EasyRestClient",
-    products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
-        .library(
-            name: "EasyRestClient",
-            targets: ["EasyRestClient"]),
-    ],
-    targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        .target(
-            name: "EasyRestClient"),
-        .testTarget(
-            name: "EasyRestAPITests",
-            dependencies: ["EasyRestClient"]
-        )
-
-    ]
+  name: "EazyRestClient",
+  platforms: [
+    .iOS(.v13),
+    .macOS(.v10_15),
+    .tvOS(.v15),
+    .watchOS(.v8),
+    .visionOS(.v1)
+  ],
+  products: [
+    .library(name: "EazyRestClient", targets: ["EazyRestClient"]),
+  ],
+  dependencies: [],
+  targets: [
+    .target(name: "EazyRestClient", dependencies: []),
+    .testTarget(name: "EazyRestClientTests", dependencies: ["EazyRestClient"]),
+  ]
 )

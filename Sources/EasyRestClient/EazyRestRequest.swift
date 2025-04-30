@@ -11,7 +11,7 @@
 
 import Foundation
 
-public protocol EasyResRequest: Encodable {
+public protocol EazyRestRequest: Encodable {
     associatedtype Response: Decodable
     
     /// HTTP method (GET, POST, PUT, DELETE, etc.)

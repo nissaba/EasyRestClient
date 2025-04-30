@@ -1,24 +1,16 @@
-# EasyRestClient
+# EazyRestClient
 
-![SwiftPM](https://img.shields.io/badge/SPM-Compatible-brightgreen.svg)
-![Platform](https://img.shields.io/badge/platform-iOS%2014%20%7C%20macOS%2011-blue)
-![Swift](https://img.shields.io/badge/swift-5.9-orange.svg)
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Tests](https://github.com/nissaba/EasyRestClient/actions/workflows/tests.yml/badge.svg)
-![Release](https://img.shields.io/github/v/release/nissaba/EasyRestClient)
-
-
-A lightweight, protocol-oriented Swift networking layer for making REST API calls.
+![SwiftPM](https://img.shields.io/badge/SPM-Compatible-brightgreen.svg) ![Platform](https://img.shields.io/badge/platform-iOS%2013%20%7C%20macOS%2010.15%20%7C%20tvOS%2015%20%7C%20watchOS%208-blue) ![Swift](https://img.shields.io/badge/swift-5.9-orange.svg) ![Tests](https://github.com/nissaba/EasyRestClient/actions/workflows/tests.yml/badge.svg) ![Release](https://img.shields.io/github/v/release/nissaba/EasyRestClient)
 
 ## Features
 
-- Protocol-based request system
-- Codable support for decoding responses
-- Customizable HTTP headers
-- Query parameters, body data, and binary support
+- Protocol-based requests with `EazyRestRequest`
+- Codable support for automatic encoding/decoding
+- Default headers (`Accept` & `Content-Type`)
 - Optional authorization token
-- URLSession-based implementation
-- Swift Package Manager compatible
+- Query parameters and body data support
+- URLSession under the hood
+- Callback and Swift Concurrency (`async/await`) APIs
 
 ## Installation
 
@@ -28,86 +20,97 @@ Add to your `Package.swift`:
 .package(url: "https://github.com/nissaba/EasyRestClient.git", from: "1.0.0")
 ```
 
-Then add `EasyRestClient` as a dependency in your target.
-
 ## Usage
 
 ### 1. Initialize the Client
 
 ```swift
-import EasyRestClient
+import EazyRestClient
 
-let apiClient = EasyRestClient(baseUrl: "https://api.sunrise-sunset.org/")
-apiClient.authToken = "Bearer your_token_if_needed"
+let client = EazyRestClient(baseURL: "https://api.example.com/")
+// Optional authorization
+client.authToken = "Bearer <token>"
 ```
 
-### 2. Create a Request
+### 2. Define a Request
 
 ```swift
-struct MyRequest: EasyRestRequest {
+struct MyRequest: EazyRestRequest {
     typealias Response = MyResponseModel
 
     var httpMethod: HTTPMethods { .get }
     var resourceName: String { "endpoint" }
-
-    var queryItems: [URLQueryItem]? {
-        [URLQueryItem(name: "key", value: "value")]
-    }
+    // Optionally override queryItems or bodyData
 }
 ```
 
-### 3. Handle the Response
+### 3. Callback-based Response Handling
 
 ```swift
-apiClient.send(MyRequest()) { result in
+client.send(MyRequest()) { result in
     switch result {
     case .success(let response):
-        print("Response: \(response)")
+        print(response)
     case .failure(let error):
-        print("Error: \(error)")
+        print("Error: \(error.localizedDescription)")
     }
 }
 ```
 
-### Custom and Default Headers
+### Async/Await Response Handling
 
-By default, all requests include the following headers:
+```swift
+Task {
+    do {
+        let response = try await client.send(MyRequest())
+        print(response)
+    } catch {
+        print("Error: \(error.localizedDescription)")
+    }
+}
+```
+
+### 4. Async/Await Response Handling
+
+```swift
+// Requires iOS 15.0+, macOS 12.0+, tvOS 15.0+, watchOS 8.0+, visionOS 1.0+
+task {
+    do {
+        let response = try await client.send(MyRequest())
+        print(response)
+    } catch {
+        print("Error: \(error.localizedDescription)")
+    }
+}
+```
+
+## Custom and Default Headers
+
+By default, all requests include these HTTP headers:
 
 ```http
 Accept: application/json
 Content-Type: application/json
 ```
 
-These are defined via a protocol extension on `EasyRestRequest`. You can override them per request if needed:
+Override in a specific request if needed:
 
 ```swift
-public extension EasyRestRequest {
+public extension MyCustomRequest: EazyRestRequest {
     var headers: [String: String]? {
         [
             "Accept": "application/json",
-            "Content-Type": "application/json"
+            "Authorization": "Bearer \(token)"
         ]
     }
 }
 ```
 
-#### Overriding headers in a specific request:
+## Example App
 
-```swift
-struct AuthenticatedRequest: EasyRestRequest {
-    typealias Response = MyResponse
-
-    var httpMethod: HTTPMethods { .get }
-    var resourceName: String { "secure/endpoint" }
-
-    var headers: [String: String]? {
-        [
-            "Authorization": "Bearer \(myToken)"
-        ]
-    }
-}
-```
+An **ExampleApp** demonstrating both callback and async/await usage is located in the `Examples/` folder. Open `ExampleApp.xcodeproj` and run on your device or simulator.
 
 ## License
 
 MIT License. © 2025 Pascale Beaulac
+
