@@ -1,5 +1,5 @@
 --indent 4
---experimentalRules indentGuide
+--experimental indentGuide
 --header ignore
 --wraparguments before-first
 --wrapcollections before-first
