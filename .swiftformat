@@ -1,5 +1,4 @@
 --indent 4
---experimental indentGuide
 --header ignore
 --wraparguments before-first
 --wrapcollections before-first
@@ -10,5 +9,5 @@
 --disable trailingClosures
 --disable sortedImports
 
-# Exclude directories (optional)
+# Exclude directories
 --exclude Carthage, Pods, Examples/ExampleApp/Assets.xcassets, Tests/EazyRestClientTests/MockURLProtocol.swift
