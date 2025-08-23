@@ -51,7 +51,9 @@ class MockURLProtocol: URLProtocol {
 }
 
 
-
+/// Unit tests for EazyRestClient covering success, error handling, and decoding scenarios.
+///
+/// Tests both callback and async/await APIs. Uses MockURLProtocol to stub network responses.
 final class EazyRestClientTests: XCTestCase {
     var client: EazyRestClient!
 
@@ -70,10 +72,12 @@ final class EazyRestClientTests: XCTestCase {
         super.tearDown()
     }
      
+    /// Simple codable struct used as a test response payload.
     struct TestResponse: Codable {
         let value: String
     }
 
+    /// Dummy request conforming to EazyRestRequest for testing various scenarios.
     struct DummyRequest: EazyRestRequest {
         typealias Response = TestResponse
         var httpMethod: HTTPMethods { .get }
@@ -81,6 +85,7 @@ final class EazyRestClientTests: XCTestCase {
         // `queryItems` and `bodyData` use the protocol’s default implementations
     }
     
+    /// Tests that a successful response with valid data triggers the success callback and returns expected data.
     func testSuccessCallback() {
         // Prepare mock to return valid JSON and HTTP 200
         let expected = TestResponse(value: "hello")
@@ -106,6 +111,7 @@ final class EazyRestClientTests: XCTestCase {
         wait(for: [exp], timeout: 1)
     }
 
+    /// Tests that a server error (HTTP 500) triggers the error callback with the correct error type.
     func testServerErrorCallback() {
         let url = URL(string: "https://example.com/path")!
         let response = HTTPURLResponse(url: url, statusCode: 500, httpVersion: nil, headerFields: nil)!
@@ -130,6 +136,7 @@ final class EazyRestClientTests: XCTestCase {
         wait(for: [exp], timeout: 1)
     }
 
+    /// Tests that a decoding error in the response triggers the decoding error callback.
     func testDecodingErrorCallback() {
         let badJSON = "{ \"wrong\": 1 }".data(using: .utf8)!
         let url = URL(string: "https://example.com/path")!
@@ -155,6 +162,7 @@ final class EazyRestClientTests: XCTestCase {
         wait(for: [exp], timeout: 1)
     }
 
+    /// Tests that a transport-level error (e.g., no internet) triggers the transport error callback.
     func testTransportErrorCallback() {
         let expectedError = URLError(.notConnectedToInternet)
         MockURLProtocol.requestHandler = { request in
@@ -178,7 +186,8 @@ final class EazyRestClientTests: XCTestCase {
         wait(for: [exp], timeout: 1)
     }
 
-    // Async tests for async/await version
+    /// Tests that a successful async response returns expected data using async/await version.
+    /// Only runs on platforms supporting concurrency.
     @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
     func testSuccessAsync() async throws {
         let expected = TestResponse(value: "async")
@@ -191,6 +200,8 @@ final class EazyRestClientTests: XCTestCase {
         XCTAssertEqual(resp.value, "async")
     }
 
+    /// Tests that a server error in async/await version throws the correct error type.
+    /// Only runs on platforms supporting concurrency.
     @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
     func testServerErrorAsync() async {
         let url = URL(string: "https://example.com/path")!
@@ -207,3 +218,4 @@ final class EazyRestClientTests: XCTestCase {
         }
     }
 }
+

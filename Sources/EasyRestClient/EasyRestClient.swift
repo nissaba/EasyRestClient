@@ -69,7 +69,7 @@ public class EazyRestClient {
             urlRequest = try buildURLRequest(for: request)
         } catch {
             DispatchQueue.main.async {
-                completion(.failure(error))
+                completion(.failure(EazyRestError.invalidURL))
             }
             return
         }
@@ -119,15 +119,35 @@ public class EazyRestClient {
     public func send<Request: EazyRestRequest>(
         _ request: Request
     ) async throws -> Request.Response {
-        let urlRequest = try buildURLRequest(for: request)
-        let (data, response) = try await session.data(for: urlRequest)
-
-        guard let http = response as? HTTPURLResponse,
-              (200..<300).contains(http.statusCode) else {
-            throw EazyRestError.serverError((response as? HTTPURLResponse)?.statusCode ?? -1)
+        let urlRequest: URLRequest
+        do {
+            urlRequest = try buildURLRequest(for: request)
+        } catch let error as EazyRestError {
+            throw error
+        } catch {
+            throw EazyRestError.invalidURL
         }
 
-        return try JSONDecoder().decode(Request.Response.self, from: data)
+        let (data, response): (Data, URLResponse)
+        do {
+            (data, response) = try await session.data(for: urlRequest)
+        } catch {
+            throw EazyRestError.transportError(error)
+        }
+
+        guard let http = response as? HTTPURLResponse else {
+            throw EazyRestError.badResponse
+        }
+
+        guard (200..<300).contains(http.statusCode) else {
+            throw EazyRestError.serverError(http.statusCode)
+        }
+
+        do {
+            return try JSONDecoder().decode(Request.Response.self, from: data)
+        } catch {
+            throw EazyRestError.decodingError(error)
+        }
     }
 
     // MARK: - Request builder
@@ -165,9 +185,14 @@ public class EazyRestClient {
         if let body = request.bodyData {
             urlRequest.httpBody = body
         } else if request.httpMethod == .post || request.httpMethod == .put {
-            urlRequest.httpBody = try JSONEncoder().encode(request)
+            do {
+                urlRequest.httpBody = try JSONEncoder().encode(request)
+            } catch {
+                throw EazyRestError.decodingError(error)
+            }
         }
 
         return urlRequest
     }
 }
+
