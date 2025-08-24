@@ -85,9 +85,24 @@ public class EazyRestClient {
                     completion(.failure(EazyRestError.badResponse))
                 }
             }
-            guard (200..<300).contains(http.statusCode) else {
+            if !(200..<300).contains(http.statusCode) {
+                let err: EazyRestError
+                switch http.statusCode {
+                case 401:
+                    err = .unauthorized
+                case 403:
+                    err = .forbidden
+                case 404:
+                    err = .notFound
+                case 408:
+                    err = .timeout
+                case 400..<600:
+                    err = .serverError(http.statusCode)
+                default:
+                    err = .serverError(http.statusCode)
+                }
                 return DispatchQueue.main.async {
-                    completion(.failure(EazyRestError.serverError(http.statusCode)))
+                    completion(.failure(err))
                 }
             }
             guard let data = data else {
@@ -139,8 +154,21 @@ public class EazyRestClient {
             throw EazyRestError.badResponse
         }
 
-        guard (200..<300).contains(http.statusCode) else {
-            throw EazyRestError.serverError(http.statusCode)
+        if !(200..<300).contains(http.statusCode) {
+            switch http.statusCode {
+            case 401:
+                throw EazyRestError.unauthorized
+            case 403:
+                throw EazyRestError.forbidden
+            case 404:
+                throw EazyRestError.notFound
+            case 408:
+                throw EazyRestError.timeout
+            case 400..<600:
+                throw EazyRestError.serverError(http.statusCode)
+            default:
+                throw EazyRestError.serverError(http.statusCode)
+            }
         }
 
         do {

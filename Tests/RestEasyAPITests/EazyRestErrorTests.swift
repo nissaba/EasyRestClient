@@ -99,10 +99,10 @@ final class EazyRestClientAdditionalCoverageTests: XCTestCase {
             case .success: XCTFail("Should fail encoding")
             case .failure(let error):
                 // The EazyRestClient wraps encoding errors as decodingError
-                if case EazyRestError.invalidURL = error {
+                if case EazyRestError.decodingError = error {
                     // Good
                 } else {
-                    XCTFail("Expected invalidURL, got \(error)")
+                    XCTFail("Expected decodingError, got \(error)")
                 }
             }
             exp.fulfill()
@@ -119,6 +119,248 @@ final class EazyRestClientAdditionalCoverageTests: XCTestCase {
             // Good
         } catch {
             XCTFail("Expected decodingError, got \(error)")
+        }
+    }
+}
+
+final class EazyRestClientHTTPStatusMappingTests: XCTestCase {
+    struct DummyRequest: EazyRestRequest, Encodable {
+        typealias Response = String
+        var httpMethod: HTTPMethods
+        var resourceName: String
+        var headers: [String : String]? = nil
+        var queryItems: [URLQueryItem]? = nil
+        var bodyData: Data? = nil
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(resourceName, forKey: .resourceName)
+            try container.encode(httpMethod.rawValue, forKey: .httpMethod)
+            try container.encodeIfPresent(headers, forKey: .headers)
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case httpMethod, resourceName, headers, queryItems, bodyData
+        }
+    }
+
+    private func makeURLSessionWithStatusCode(_ statusCode: Int) -> URLSession {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [MockURLProtocol.self]
+        MockURLProtocol.requestHandler = { _ in
+            let response = HTTPURLResponse(
+                url: URL(string: "https://example.com")!,
+                statusCode: statusCode,
+                httpVersion: nil,
+                headerFields: nil)!
+            return (Data(), response)
+        }
+        return URLSession(configuration: configuration)
+    }
+
+    func testHTTP401Unauthorized_Callback() {
+        let client = EazyRestClient(baseURL: "https://example.com", session: makeURLSessionWithStatusCode(401))
+        let request = DummyRequest(httpMethod: .get, resourceName: "test")
+
+        let exp = expectation(description: "401 Unauthorized")
+
+        client.send(request) { result in
+            switch result {
+            case .success:
+                XCTFail("Request should have failed with 401")
+            case .failure(let error):
+                guard case EazyRestError.unauthorized = error else {
+                    XCTFail("Expected unauthorized, got \(error)")
+                    return
+                }
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1)
+    }
+    @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
+    func testHTTP401Unauthorized_Async() async {
+        let client = EazyRestClient(baseURL: "https://example.com", session: makeURLSessionWithStatusCode(401))
+        let request = DummyRequest(httpMethod: .get, resourceName: "test")
+        do {
+            _ = try await client.send(request)
+            XCTFail("Request should have failed with 401")
+        } catch EazyRestError.unauthorized {
+            // Good
+        } catch {
+            XCTFail("Expected unauthorized, got \(error)")
+        }
+    }
+
+    func testHTTP403Forbidden_Callback() {
+        let client = EazyRestClient(baseURL: "https://example.com", session: makeURLSessionWithStatusCode(403))
+        let request = DummyRequest(httpMethod: .get, resourceName: "test")
+
+        let exp = expectation(description: "403 Forbidden")
+
+        client.send(request) { result in
+            switch result {
+            case .success:
+                XCTFail("Request should have failed with 403")
+            case .failure(let error):
+                guard case EazyRestError.forbidden = error else {
+                    XCTFail("Expected forbidden, got \(error)")
+                    return
+                }
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1)
+    }
+    @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
+    func testHTTP403Forbidden_Async() async {
+        let client = EazyRestClient(baseURL: "https://example.com", session: makeURLSessionWithStatusCode(403))
+        let request = DummyRequest(httpMethod: .get, resourceName: "test")
+        do {
+            _ = try await client.send(request)
+            XCTFail("Request should have failed with 403")
+        } catch EazyRestError.forbidden {
+            // Good
+        } catch {
+            XCTFail("Expected forbidden, got \(error)")
+        }
+    }
+
+    func testHTTP404NotFound_Callback() {
+        let client = EazyRestClient(baseURL: "https://example.com", session: makeURLSessionWithStatusCode(404))
+        let request = DummyRequest(httpMethod: .get, resourceName: "test")
+
+        let exp = expectation(description: "404 Not Found")
+
+        client.send(request) { result in
+            switch result {
+            case .success:
+                XCTFail("Request should have failed with 404")
+            case .failure(let error):
+                guard case EazyRestError.notFound = error else {
+                    XCTFail("Expected notFound, got \(error)")
+                    return
+                }
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1)
+    }
+    @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
+    func testHTTP404NotFound_Async() async {
+        let client = EazyRestClient(baseURL: "https://example.com", session: makeURLSessionWithStatusCode(404))
+        let request = DummyRequest(httpMethod: .get, resourceName: "test")
+        do {
+            _ = try await client.send(request)
+            XCTFail("Request should have failed with 404")
+        } catch EazyRestError.notFound {
+            // Good
+        } catch {
+            XCTFail("Expected notFound, got \(error)")
+        }
+    }
+
+    func testHTTP408RequestTimeout_Callback() {
+        let client = EazyRestClient(baseURL: "https://example.com", session: makeURLSessionWithStatusCode(408))
+        let request = DummyRequest(httpMethod: .get, resourceName: "test")
+
+        let exp = expectation(description: "408 Request Timeout")
+
+        client.send(request) { result in
+            switch result {
+            case .success:
+                XCTFail("Request should have failed with 408")
+            case .failure(let error):
+                guard case EazyRestError.timeout = error else {
+                    XCTFail("Expected timeout, got \(error)")
+                    return
+                }
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1)
+    }
+    @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
+    func testHTTP408RequestTimeout_Async() async {
+        let client = EazyRestClient(baseURL: "https://example.com", session: makeURLSessionWithStatusCode(408))
+        let request = DummyRequest(httpMethod: .get, resourceName: "test")
+        do {
+            _ = try await client.send(request)
+            XCTFail("Request should have failed with 408")
+        } catch EazyRestError.timeout {
+            // Good
+        } catch {
+            XCTFail("Expected timeout, got \(error)")
+        }
+    }
+
+    func testHTTP418Other4xx_Callback() {
+        let client = EazyRestClient(baseURL: "https://example.com", session: makeURLSessionWithStatusCode(418))
+        let request = DummyRequest(httpMethod: .get, resourceName: "test")
+
+        let exp = expectation(description: "418 Client Error")
+
+        client.send(request) { result in
+            switch result {
+            case .success:
+                XCTFail("Request should have failed with 418")
+            case .failure(let error):
+                guard case EazyRestError.serverError(let code) = error else {
+                    XCTFail("Expected serverError, got \(error)")
+                    return
+                }
+                XCTAssertEqual(code, 418)
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1)
+    }
+    @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
+    func testHTTP418Other4xx_Async() async {
+        let client = EazyRestClient(baseURL: "https://example.com", session: makeURLSessionWithStatusCode(418))
+        let request = DummyRequest(httpMethod: .get, resourceName: "test")
+        do {
+            _ = try await client.send(request)
+            XCTFail("Request should have failed with 418")
+        } catch EazyRestError.serverError(let code) {
+            XCTAssertEqual(code, 418)
+        } catch {
+            XCTFail("Expected serverError, got \(error)")
+        }
+    }
+
+    func testHTTP500ServerError_Callback() {
+        let client = EazyRestClient(baseURL: "https://example.com", session: makeURLSessionWithStatusCode(500))
+        let request = DummyRequest(httpMethod: .get, resourceName: "test")
+
+        let exp = expectation(description: "500 Server Error")
+
+        client.send(request) { result in
+            switch result {
+            case .success:
+                XCTFail("Request should have failed with 500")
+            case .failure(let error):
+                guard case EazyRestError.serverError(let code) = error else {
+                    XCTFail("Expected serverError, got \(error)")
+                    return
+                }
+                XCTAssertEqual(code, 500)
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1)
+    }
+    @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
+    func testHTTP500ServerError_Async() async {
+        let client = EazyRestClient(baseURL: "https://example.com", session: makeURLSessionWithStatusCode(500))
+        let request = DummyRequest(httpMethod: .get, resourceName: "test")
+        do {
+            _ = try await client.send(request)
+            XCTFail("Request should have failed with 500")
+        } catch EazyRestError.serverError(let code) {
+            XCTAssertEqual(code, 500)
+        } catch {
+            XCTFail("Expected serverError, got \(error)")
         }
     }
 }

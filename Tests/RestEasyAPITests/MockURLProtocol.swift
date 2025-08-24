@@ -210,11 +210,11 @@ final class EazyRestClientTests: XCTestCase {
 
         do {
             _ = try await client.send(DummyRequest())
-            XCTFail("Expected server error")
-        } catch EazyRestError.serverError(let code) {
-            XCTAssertEqual(code, 404)
+            XCTFail("Expected notFound error")
+        } catch EazyRestError.notFound {
+            // success
         } catch {
-            XCTFail("Expected EazyRestError.serverError, got \(error)")
+            XCTFail("Expected EazyRestError.notFound, got \(error)")
         }
     }
 }
