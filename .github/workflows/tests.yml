@@ -1,4 +1,4 @@
-name: Run Swift Tests
+name: SwiftPM Build & Test (All Apple Platforms)
 
 on:
   push:
@@ -7,16 +7,50 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  build-and-test:
     runs-on: macos-latest
+
+    strategy:
+      matrix:
+        platform:
+          - macOS
+          - iOS
+          - tvOS
+          - watchOS
+          - visionOS
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Swift
-        uses: swift-actions/setup-swift@v1
-        with:
-          swift-version: '6.0'
+      - name: Show Swift and Xcode version
+        run: |
+          swift --version
+          xcodebuild -version
 
-      - name: Run Tests
+      - name: Resolve Dependencies
+        run: swift package resolve
+
+      - name: Build for ${{ matrix.platform }}
+        run: |
+          case "${{ matrix.platform }}" in
+            macOS)
+              swift build
+              ;;
+            iOS)
+              xcodebuild build -scheme EazyRestClient -destination 'generic/platform=iOS'
+              ;;
+            tvOS)
+              xcodebuild build -scheme EazyRestClient -destination 'generic/platform=tvOS'
+              ;;
+            watchOS)
+              xcodebuild build -scheme EazyRestClient -destination 'generic/platform=watchOS'
+              ;;
+            visionOS)
+              xcodebuild build -scheme EazyRestClient -destination 'generic/platform=visionOS'
+              ;;
+          esac
+
+      - name: Run SwiftPM Tests (macOS only)
+        if: matrix.platform == 'macOS'
         run: swift test --enable-test-discovery
