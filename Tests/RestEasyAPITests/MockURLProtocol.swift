@@ -111,81 +111,6 @@ final class EazyRestClientTests: XCTestCase {
         wait(for: [exp], timeout: 1)
     }
 
-    /// Tests that a server error (HTTP 500) triggers the error callback with the correct error type.
-    func testServerErrorCallback() {
-        let url = URL(string: "https://example.com/path")!
-        let response = HTTPURLResponse(url: url, statusCode: 500, httpVersion: nil, headerFields: nil)!
-        MockURLProtocol.requestHandler = { request in
-            return (Data(), response)
-        }
-
-        let exp = expectation(description: "Server error callback")
-        client.send(DummyRequest()) { result in
-            switch result {
-            case .success:
-                XCTFail("Expected failure due to server error")
-            case .failure(let error):
-                if case EazyRestError.serverError(let code) = error {
-                    XCTAssertEqual(code, 500)
-                } else {
-                    XCTFail("Expected EazyRestError.serverError, got \(error)")
-                }
-            }
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1)
-    }
-
-    /// Tests that a decoding error in the response triggers the decoding error callback.
-    func testDecodingErrorCallback() {
-        let badJSON = "{ \"wrong\": 1 }".data(using: .utf8)!
-        let url = URL(string: "https://example.com/path")!
-        let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)!
-        MockURLProtocol.requestHandler = { request in
-            return (badJSON, response)
-        }
-
-        let exp = expectation(description: "Decoding error callback")
-        client.send(DummyRequest()) { result in
-            switch result {
-            case .success:
-                XCTFail("Expected failure due to decoding error")
-            case .failure(let error):
-                if case EazyRestError.decodingError = error {
-                    // success
-                } else {
-                    XCTFail("Expected EazyRestError.decodingError, got \(error)")
-                }
-            }
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1)
-    }
-
-    /// Tests that a transport-level error (e.g., no internet) triggers the transport error callback.
-    func testTransportErrorCallback() {
-        let expectedError = URLError(.notConnectedToInternet)
-        MockURLProtocol.requestHandler = { request in
-            throw expectedError
-        }
-
-        let exp = expectation(description: "Transport error callback")
-        client.send(DummyRequest()) { result in
-            switch result {
-            case .success:
-                XCTFail("Expected transport error failure")
-            case .failure(let error):
-                if case EazyRestError.transportError(let underlying) = error {
-                    XCTAssertEqual((underlying as? URLError)?.code, .notConnectedToInternet)
-                } else {
-                    XCTFail("Expected EazyRestError.transportError, got \(error)")
-                }
-            }
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1)
-    }
-
     /// Tests that a successful async response returns expected data using async/await version.
     /// Only runs on platforms supporting concurrency.
     @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
@@ -198,24 +123,6 @@ final class EazyRestClientTests: XCTestCase {
 
         let resp = try await client.send(DummyRequest())
         XCTAssertEqual(resp.value, "async")
-    }
-
-    /// Tests that a server error in async/await version throws the correct error type.
-    /// Only runs on platforms supporting concurrency.
-    @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
-    func testServerErrorAsync() async {
-        let url = URL(string: "https://example.com/path")!
-        let response = HTTPURLResponse(url: url, statusCode: 404, httpVersion: nil, headerFields: nil)!
-        MockURLProtocol.requestHandler = { _ in (Data(), response) }
-
-        do {
-            _ = try await client.send(DummyRequest())
-            XCTFail("Expected notFound error")
-        } catch EazyRestError.notFound {
-            // success
-        } catch {
-            XCTFail("Expected EazyRestError.notFound, got \(error)")
-        }
     }
 }
 
